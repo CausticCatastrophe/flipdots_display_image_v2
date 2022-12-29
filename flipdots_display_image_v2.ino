@@ -103,6 +103,7 @@ void setup() {
 
 void loop() {
 
+  //Serial command console
   if(Serial.available()) {
     command = Serial.readStringUntil('\n');
     
@@ -177,29 +178,70 @@ void loop() {
     else{
       Serial.println("Invalid command");
     }
-  }
-  
-  /*
-  //wipe the screen
-  ResetButtonState = digitalRead(ResetButton);
-  if (ResetButtonState == LOW){
-  digitalWrite(ResetPin, HIGH);
-  delay(2);
-  digitalWrite(ResetPin, LOW);
-  AllYellow();
-  AllBlack();
-  }
 
-  // Draw Kosmo
-  draw_buffer(kozmo_buffer);
-  delay(blankDelay);
+    // Cool Buttons
+    //wipe the screen
+    ResetButtonState = digitalRead(ResetButton);
+    if (ResetButtonState == LOW){
+    digitalWrite(ResetPin, HIGH);
+    delay(2);
+    digitalWrite(ResetPin, LOW);
+    AllYellow();
+    AllBlack();
+    }
 
-  AllYellow();
-  delay(blankDelay);
+    //write a yellow pixel
+    WriteButtonStateYellow = digitalRead(WriteButtonYellow);
+    if (WriteButtonStateYellow == LOW){
+      DotYellow();
+    }
+    //write a black pixel
+    WriteButtonStateBlack = digitalRead(WriteButtonBlack);
+    if (WriteButtonStateBlack == LOW){
+      DotBlack();
+    }
 
-  AllBlack();
-  delay(blankDelay);
-  */
+    //advance column right
+    RightButtonState = digitalRead(RightButton);
+    if ((RightButtonState == LOW) && (RightButtonLatch == 0)){
+      ColumnAdvance();
+      RightButtonLatch = 1; 
+    }
+    RightButtonState = digitalRead(RightButton);
+    if ((RightButtonState == HIGH) && (RightButtonLatch == 1)){
+      RightButtonLatch = 0; 
+        delay(5);}
+
+    //retreat column right
+    LeftButtonState = digitalRead(LeftButton);
+    if ((LeftButtonState == LOW) && (LeftButtonLatch == 0)){
+      ColumnRetreat();
+      LeftButtonLatch = 1; }
+    LeftButtonState = digitalRead(LeftButton);
+    if ((LeftButtonState == HIGH) && (LeftButtonLatch == 1)){
+      LeftButtonLatch = 0; }
+
+    //advance row up
+    UpButtonState = digitalRead(UpButton);
+    if ((UpButtonState == LOW) && (UpButtonLatch == 0)){
+      RowAdvance();
+      UpButtonLatch = 1; }
+    UpButtonState = digitalRead(UpButton);
+    if ((UpButtonState == HIGH) && (UpButtonLatch == 1)){
+      UpButtonLatch = 0; 
+      delay(5);
+      }
+
+    //retreat row down
+    DownButtonState = digitalRead(DownButton);
+    if ((DownButtonState == LOW) && (DownButtonLatch == 0)){
+      RowRetreat();
+      DownButtonLatch = 1; }
+    DownButtonState = digitalRead(DownButton);
+    if ((DownButtonState == HIGH) && (DownButtonLatch == 1)){
+      DownButtonLatch = 0; }
+      
+    }
 }
 
 void show_display_buffer(){
@@ -261,10 +303,8 @@ void draw_buffer(bool image_buffer[dots_per_row][dots_per_column]) {
           DotBlack();
         }
         delay(Del);
-        RowAdvance();
       }
       Serial.println(); // carriage return after the last label 
-      ColumnAdvance();
   }
   Serial.println(); // carriage return after the last label 
 }
