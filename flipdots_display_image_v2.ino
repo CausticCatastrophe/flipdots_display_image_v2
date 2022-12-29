@@ -261,8 +261,10 @@ void draw_buffer(bool image_buffer[dots_per_row][dots_per_column]) {
           DotBlack();
         }
         delay(Del);
+        RowAdvance();
       }
       Serial.println(); // carriage return after the last label 
+      ColumnAdvance();
   }
   Serial.println(); // carriage return after the last label 
 }
